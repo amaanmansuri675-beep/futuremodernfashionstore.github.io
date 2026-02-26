@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Fighter Pro</title>
+
+<style>
+body{
+    margin:0;
+    background:#000;
+    font-family:Arial;
+    color:white;
+    text-align:center;
+}
+
+h1{
+    margin:0;
+    padding:10px;
+    background:#111;
+}
+
+.arena{
+    position:relative;
+    height:300px;
+    background:linear-gradient(#333,#000);
+    overflow:hidden;
+}
+
+.fighter{
+    position:absolute;
+    bottom:0;
+    width:120px;
+    transition:0.3s;
+}
+
+#player{left:20px;}
+#enemy{right:20px;}
+
+.health{
+    height:20px;
+    background:red;
+    margin:10px;
+}
+
+.bar{
+    height:100%;
+    background:lime;
+    transition:0.4s;
+}
+
+.controls button{
+    width:30%;
+    padding:15px;
+    margin:5px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+}
+
+.attack{background:#e74c3c;color:white;}
+.power{background:#f1c40f;color:black;}
+.jump{background:#3498db;color:white;}
+.next{background:#2ecc71;color:white;width:95%;}
+</style>
+</head>
+
+<body>
+
+<h1>🔥 Fighter Pro - Level <span id="level">1</span></h1>
+
+<div class="arena">
+
+<img id="player" class="fighter" src="https://i.imgur.com/6X4R6pS.png">
+<img id="enemy" class="fighter" src="https://i.imgur.com/Z6X9Z9U.png">
+
+</div>
+
+<div class="health">
+<div id="playerBar" class="bar"></div>
+</div>
+
+<div class="health">
+<div id="enemyBar" class="bar" style="background:orange"></div>
+</div>
+
+<h2 id="status"></h2>
+
+<div class="controls">
+<button class="attack" onclick="attack()">⚔ Attack</button>
+<button class="power" onclick="power()">💥 Power</button>
+<button class="jump" onclick="jump()">⬆ Jump</button>
+</div>
+
+<button class="next" onclick="nextLevel()">Next Level</button>
+
+<audio id="hit" src="https://www.soundjay.com/mechanical/sounds/punch-1.mp3"></audio>
+
+<script>
+let level=1;
+let player=100;
+let enemy=100;
+
+function update(){
+playerBar.style.width=player+"%";
+enemyBar.style.width=enemy+"%";
+}
+
+function enemyAttack(){
+let dmg=Math.random()*8+level*2;
+player-=dmg;
+if(player<0)player=0;
+update();
+}
+
+function animateHit(){
+player.style.transform="translateX(40px)";
+setTimeout(()=>player.style.transform="translateX(0)",200);
+}
+
+function attack(){
+if(enemy<=0)return;
+
+document.getElementById("hit").play();
+let dmg=Math.random()*10+level*3;
+enemy-=dmg;
+animateHit();
+enemyAttack();
+check();
+update();
+}
+
+function power(){
+if(enemy<=0)return;
+
+let dmg=Math.random()*25+level*5;
+enemy-=dmg;
+player-=10;
+check();
+update();
+}
+
+function jump(){
+player.style.bottom="80px";
+setTimeout(()=>player.style.bottom="0",400);
+}
+
+function check(){
+if(enemy<=0){
+status.innerHTML="🏆 Enemy Defeated!";
+}
+if(player<=0){
+status.innerHTML="💀 You Lost!";
+}
+}
+
+function nextLevel(){
+if(enemy>0)return alert("Defeat enemy first!");
+
+if(level>=5){
+alert("🎉 YOU WON ALL LEVELS!");
+return;
+}
+
+level++;
+document.getElementById("level").innerText=level;
+player=100;
+enemy=100+level*20;
+status.innerHTML="";
+update();
+}
+
+update();
+</script>
+
+</body>
+</html>
