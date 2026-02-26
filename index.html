@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Fighter X</title>
+
+<style>
+body{margin:0;background:#000;color:white;font-family:Arial;text-align:center;}
+h1{background:#111;margin:0;padding:10px;}
+
+.arena{
+position:relative;
+height:330px;
+background:linear-gradient(#222,#000);
+overflow:hidden;
+}
+
+.fighter{
+position:absolute;
+bottom:0;
+width:120px;
+transition:.2s;
+}
+
+#player{left:40px;}
+#enemy{right:40px;transform:scaleX(-1);}
+
+.health{height:18px;margin:6px;background:red;}
+.bar{height:100%;background:lime;transition:.3s;}
+
+.controls button{
+width:30%;
+padding:14px;
+margin:5px;
+border:none;
+border-radius:10px;
+font-size:15px;
+}
+
+.move{background:#3498db;color:white;}
+.attack{background:#e74c3c;color:white;}
+.fire{background:#f39c12;color:black;}
+.ultimate{background:#9b59b6;color:white;width:95%;}
+</style>
+</head>
+
+<body>
+
+<h1>🔥 Ultimate Fighter X — Level <span id="lvl">1</span></h1>
+
+<div class="arena">
+<img id="player" class="fighter" src="https://i.imgur.com/Gd2R7bF.png">
+<img id="enemy" class="fighter" src="https://i.imgur.com/6rljv1P.png">
+</div>
+
+<div class="health"><div id="pbar" class="bar"></div></div>
+<div class="health"><div id="ebar" class="bar" style="background:orange"></div></div>
+
+<h3 id="status"></h3>
+<h3>Coins: <span id="coins">0</span> 🪙</h3>
+
+<div class="controls">
+<button class="move" onclick="move()">➡ Move</button>
+<button class="attack" onclick="punch()">👊 Punch</button>
+<button class="fire" onclick="fireball()">🔥 Fireball</button>
+</div>
+
+<button class="ultimate" onclick="ultimate()">💥 ULTIMATE POWER</button>
+
+<script>
+let level=1;
+let coins=0;
+let pHP=100;
+let eHP=100;
+let pos=40;
+
+function update(){
+pbar.style.width=pHP+"%";
+ebar.style.width=eHP+"%";
+coins.innerText=Math.floor(coins);
+}
+
+function move(){
+pos+=20;
+if(pos>220)pos=220;
+player.style.left=pos+"px";
+}
+
+function enemyAI(){
+let dmg=Math.random()*10+level*2;
+pHP-=dmg;
+if(pHP<0)pHP=0;
+update();
+}
+
+function punch(){
+if(eHP<=0)return;
+eHP-=Math.random()*12+level*3;
+enemyAI();
+check();
+update();
+}
+
+function fireball(){
+if(eHP<=0)return;
+eHP-=Math.random()*20+level*4;
+enemyAI();
+check();
+update();
+}
+
+function ultimate(){
+if(eHP<=0)return;
+eHP-=Math.random()*40+level*6;
+pHP-=10;
+enemyAI();
+check();
+update();
+}
+
+function check(){
+if(eHP<=0){
+status.innerHTML="🏆 Enemy Defeated!";
+coins+=50*level;
+nextLevel();
+}
+if(pHP<=0){
+status.innerHTML="💀 You Lost!";
+}
+}
+
+function nextLevel(){
+setTimeout(()=>{
+if(level>=5){
+alert("🎉 YOU COMPLETED ALL LEVELS!");
+return;
+}
+level++;
+lvl.innerText=level;
+pHP=100;
+eHP=100+level*30;
+pos=40;
+player.style.left="40px";
+status.innerHTML="";
+update();
+},1500);
+}
+
+update();
+</script>
+
+</body>
+</html>
