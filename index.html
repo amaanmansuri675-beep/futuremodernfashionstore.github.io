@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amaan Fashion Pro Store</title>
+
+<style>
+body{
+    font-family:Arial;
+    margin:0;
+    background:#f5f5f5;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.search{
+    width:40%;
+    padding:8px;
+}
+
+.products{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+.card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+button{
+    background:#111;
+    color:white;
+    border:none;
+    padding:10px;
+    width:100%;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.cartBtn{
+    background:#25D366;
+}
+
+.cartPanel{
+    position:fixed;
+    right:-350px;
+    top:0;
+    width:350px;
+    height:100%;
+    background:white;
+    box-shadow:-5px 0 10px rgba(0,0,0,0.3);
+    padding:20px;
+    transition:0.3s;
+    overflow:auto;
+}
+
+.dark{
+    background:#222;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>Amaan Fashion</h2>
+
+<input class="search" placeholder="Search products..." onkeyup="searchProducts(this.value)">
+
+<div>
+<button onclick="toggleDark()">🌙</button>
+<button onclick="openCart()">🛒 (<span id="count">0</span>)</button>
+</div>
+</header>
+
+<div class="products" id="products"></div>
+
+<div class="cartPanel" id="cartPanel">
+<h3>Your Cart</h3>
+<div id="cartItems"></div>
+<h2>Total ₹ <span id="total">0</span></h2>
+<button class="cartBtn" onclick="orderWhatsApp()">Order WhatsApp</button>
+<button onclick="closeCart()">Close</button>
+</div>
+
+<script>
+let products=[
+{name:"T Shirt",price:499,img:"https://images.unsplash.com/photo-1521572163474"},
+{name:"Jeans",price:999,img:"https://images.unsplash.com/photo-1512436991641"},
+{name:"Jacket",price:1999,img:"https://images.unsplash.com/photo-1520975916090"},
+{name:"Shoes",price:1499,img:"https://images.unsplash.com/photo-1602810318383"},
+{name:"Hoodie",price:1299,img:"https://images.unsplash.com/photo-1556821840"}
+];
+
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+
+function displayProducts(list){
+let html="";
+list.forEach((p,i)=>{
+html+=`
+<div class="card">
+<img src="${p.img}">
+<h3>${p.name}</h3>
+<p>₹${p.price}</p>
+<button onclick="addCart(${i})">Add To Cart</button>
+</div>`;
+});
+document.getElementById("products").innerHTML=html;
+}
+displayProducts(products);
+
+function addCart(i){
+cart.push(products[i]);
+localStorage.setItem("cart",JSON.stringify(cart));
+updateCart();
+}
+
+function updateCart(){
+let html="";
+let total=0;
+
+cart.forEach((p)=>{
+total+=p.price;
+html+=`<p>${p.name} - ₹${p.price}</p>`;
+});
+
+document.getElementById("cartItems").innerHTML=html;
+document.getElementById("total").innerText=total;
+document.getElementById("count").innerText=cart.length;
+}
+updateCart();
+
+function openCart(){
+document.getElementById("cartPanel").style.right="0";
+}
+function closeCart(){
+document.getElementById("cartPanel").style.right="-350px";
+}
+
+function orderWhatsApp(){
+let msg="Order:%0A";
+cart.forEach(p=>msg+=p.name+" ₹"+p.price+"%0A");
+window.open("https://wa.me/91YOURNUMBER?text="+msg);
+}
+
+function searchProducts(val){
+let filtered=products.filter(p=>p.name.toLowerCase().includes(val.toLowerCase()));
+displayProducts(filtered);
+}
+
+function toggleDark(){
+document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>
